@@ -20,9 +20,4 @@ public class DisponibilidadController {
         return service.obtenerDisponibilidad();
     }
 
-    // PUT /disponibilidad
-    @PutMapping
-    public Disponibilidad actualizarDisponibilidad(@RequestBody Disponibilidad datos) {
-        return service.actualizarDisponibilidad(datos);
-    }
 }

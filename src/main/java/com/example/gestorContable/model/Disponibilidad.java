@@ -67,5 +67,7 @@ public class Disponibilidad {
     public BigDecimal getFondoEmergencia() {
         return this.fondoEmergencia;
     }
+
+
 }
 

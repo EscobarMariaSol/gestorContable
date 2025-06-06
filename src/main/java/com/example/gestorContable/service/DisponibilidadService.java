@@ -72,7 +72,7 @@ public class DisponibilidadService {
             case "FONDOEMERGENCIA" -> disponibilidad.setFondoEmergencia(disponibilidad.getFondoEmergencia().subtract(monto));
             default -> throw new IllegalArgumentException("Categoría no válida: " + categoria);
         }
-
+        disponibilidad.setTotalGeneral(disponibilidad.getTotalGeneral().subtract(monto));
         disponibilidadRepository.save(disponibilidad);
     }
 
