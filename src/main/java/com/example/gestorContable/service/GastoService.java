@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class GastoService {
@@ -41,8 +43,32 @@ public class GastoService {
     }
 
     public List<Gasto> obtenerTodosLosGastos() {
-
         return gastoRepository.findAll();
     }
+
+    public List<GastoDTO> listarPorMes(int mes) {
+        List<Gasto> gastos = gastoRepository.findByMes(mes);
+        return crearGastoDTO(gastos);
+    }
+
+    public List<GastoDTO> listarPorAnio(int anio) {
+        List<Gasto> gastos = gastoRepository.findByAnio(anio);
+        return crearGastoDTO(gastos);
+    }
+
+    public List<GastoDTO> listarPorCategoria(String categoria) {
+        List<Gasto> gastos = gastoRepository.findByCategoria(categoria);
+        return crearGastoDTO(gastos);
+    }
+
+    private List<GastoDTO> crearGastoDTO(List<Gasto> gastos) {
+        return gastos.stream().map( g -> new GastoDTO(
+                g.getId(),
+                g.getMonto(),
+                g.getCategoria(),
+                g.getDescripcion(),
+                g.getFecha())).collect(Collectors.toList());
+    }
+
 }
 

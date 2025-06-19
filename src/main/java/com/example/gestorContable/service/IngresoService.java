@@ -76,5 +76,4 @@ public class IngresoService {
         return ingresoRepository.findAll();
     }
 
-
 }
