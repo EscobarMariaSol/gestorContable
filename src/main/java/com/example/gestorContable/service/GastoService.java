@@ -4,6 +4,7 @@ import com.example.gestorContable.dto.GastoDTO;
 import com.example.gestorContable.request.GastoRequest;
 import com.example.gestorContable.model.Gasto;
 import com.example.gestorContable.repository.GastoRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,7 +23,15 @@ public class GastoService {
         this.disponibilidadService = disponibilidadService;
     }
 
+    @Transactional
     public GastoDTO registrarGasto(GastoRequest request) {
+        List<String> categoriasValidas = List.of("GUSTOS", "NECESIDADES", "AHORRO", "FONDOEMERGENCIA");
+        String categoriaNormalizada = request.getCategoria().toUpperCase();
+
+        if (!categoriasValidas.contains(categoriaNormalizada)) {
+            throw new IllegalArgumentException("Categoría no válida: " + request.getCategoria());
+        }
+
         Gasto gasto = new Gasto();
         gasto.setMonto(request.getMonto());
         gasto.setCategoria(request.getCategoria().toUpperCase());
@@ -59,6 +68,13 @@ public class GastoService {
     public List<GastoDTO> listarPorCategoria(String categoria) {
         List<Gasto> gastos = gastoRepository.findByCategoria(categoria);
         return crearGastoDTO(gastos);
+    }
+
+    public void eliminarGasto(Long id) {
+        if (!gastoRepository.existsById(id)) {
+            throw new RuntimeException("El gasto con ID " + id + " no existe.");
+        }
+        gastoRepository.deleteById(id);
     }
 
     private List<GastoDTO> crearGastoDTO(List<Gasto> gastos) {

@@ -5,6 +5,7 @@ import com.example.gestorContable.model.Gasto;
 import com.example.gestorContable.request.GastoRequest;
 import com.example.gestorContable.service.GastoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,6 +46,11 @@ public class GastoController {
         return gastoService.listarPorCategoria(categoria);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarGasto(@PathVariable Long id) {
+        gastoService.eliminarGasto(id);
+        return ResponseEntity.ok("Gasto eliminado correctamente");
+    }
 
 
 }

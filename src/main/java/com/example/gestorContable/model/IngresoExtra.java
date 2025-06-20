@@ -13,8 +13,8 @@ public class IngresoExtra {
     private Long id;
 
     private BigDecimal monto;
-    private String descripcion;
     private LocalDate fecha;
+    private String concepto;
 
     //Métodos
 
@@ -22,11 +22,28 @@ public class IngresoExtra {
         this.monto = monto;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
 
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
+    }
+
+    public void setConcepto(String concepto) {
+        this.concepto = concepto;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public BigDecimal getMonto() {
+        return this.monto;
+    }
+
+    public LocalDate getFecha() {
+        return this.fecha;
+    }
+
+    public String getConcepto() {
+        return this.concepto;
     }
 }

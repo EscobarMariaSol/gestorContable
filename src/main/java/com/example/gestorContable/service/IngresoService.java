@@ -72,7 +72,6 @@ public class IngresoService {
 
 
     public List<Ingreso> obtenerTodosLosIngresos() {
-
         return ingresoRepository.findAll();
     }
 
