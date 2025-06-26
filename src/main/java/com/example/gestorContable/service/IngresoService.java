@@ -75,4 +75,10 @@ public class IngresoService {
         return ingresoRepository.findAll();
     }
 
+    public void eliminarIngreso(Long id) {
+        if (!ingresoRepository.existsById(id)) {
+            throw new RuntimeException("El gasto con ID " + id + " no existe.");
+        }
+        ingresoRepository.deleteById(id);
+    }
 }

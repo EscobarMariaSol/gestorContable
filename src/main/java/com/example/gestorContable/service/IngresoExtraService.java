@@ -42,5 +42,12 @@ public class IngresoExtraService {
     public List<IngresoExtra> obtenerTodosLosIngresosExtras() {
         return ingresoExtraRepository.findAll();
     }
+
+    public void eliminarIngresoExtra(Long id) {
+        if (!ingresoExtraRepository.existsById(id)) {
+            throw new RuntimeException("El gasto con ID " + id + " no existe.");
+        }
+        ingresoExtraRepository.deleteById(id);
+    }
 }
 

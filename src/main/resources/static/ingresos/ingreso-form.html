@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Ingreso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <h2 class="text-center mb-4">Registrar Ingreso</h2>
+
+    <form id="ingresoForm" class="mx-auto" style="max-width: 400px;">
+        <div class="mb-3">
+            <label for="tipo" class="form-label">Tipo de ingreso</label>
+            <select class="form-select" id="tipo" required>
+                <option value="">Seleccione...</option>
+                <option value="SUELDO">Sueldo</option>
+                <option value="EXTRA">Extra</option>
+            </select>
+        </div>
+
+        <div class="mb-3" id="conceptoGroup" style="display: none;">
+            <label for="concepto" class="form-label">Concepto</label>
+            <input type="text" class="form-control" id="concepto" placeholder="Ej: Venta por encargo">
+        </div>
+
+        <div class="mb-3">
+            <label for="monto" class="form-label">Monto</label>
+            <input type="number" class="form-control" id="monto" placeholder="Ej: 50000" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Registrar</button>
+    </form>
+
+    <div id="mensaje" class="mt-4 text-center"></div>
+
+    <div class="text-center mt-5">
+        <a href="/ingresos.html" class="btn btn-info">Ingresos</a>
+        <a href="/" class="btn btn-info">Inicio</a>
+    </div>
+</div>
+
+<script>
+    const tipoSelect = document.getElementById("tipo");
+    const conceptoGroup = document.getElementById("conceptoGroup");
+
+    tipoSelect.addEventListener("change", () => {
+        if (tipoSelect.value === "EXTRA") {
+            conceptoGroup.style.display = "block";
+        } else {
+            conceptoGroup.style.display = "none";
+        }
+    });
+
+    document.getElementById("ingresoForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const tipo = tipoSelect.value;
+        const monto = parseFloat(document.getElementById("monto").value);
+        const concepto = document.getElementById("concepto").value;
+        const mensajeDiv = document.getElementById("mensaje");
+
+        if (tipo === "EXTRA") {
+            fetch("/ingresos_extras", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ monto: monto, concepto: concepto })
+            })
+            .then(res => res.ok ? res.json() : Promise.reject("Error al registrar ingreso extra"))
+            .then(data => {
+                mensajeDiv.innerHTML = `<div class="alert alert-success">Ingreso extra registrado (ID: ${data.id})</div>`;
+                e.target.reset();
+                conceptoGroup.style.display = "none";
+            })
+            .catch(err => {
+                mensajeDiv.innerHTML = `<div class="alert alert-danger">${err}</div>`;
+            });
+        } else if (tipo === "SUELDO") {
+            fetch("/ingresos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ monto: monto })
+            })
+            .then(res => res.ok ? res.json() : Promise.reject("Error al registrar sueldo"))
+            .then(data => {
+                mensajeDiv.innerHTML = `<div class="alert alert-success">Sueldo registrado (ID: ${data.id})</div>`;
+                e.target.reset();
+            })
+            .catch(err => {
+                mensajeDiv.innerHTML = `<div class="alert alert-danger">${err}</div>`;
+            });
+        } else {
+            mensajeDiv.innerHTML = `<div class="alert alert-warning">Debe seleccionar el tipo de ingreso</div>`;
+        }
+    });
+</script>
+</body>
+</html>

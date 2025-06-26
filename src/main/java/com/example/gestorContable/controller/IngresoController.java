@@ -4,6 +4,7 @@ import com.example.gestorContable.dto.IngresoDTO;
 import com.example.gestorContable.model.Ingreso;
 import com.example.gestorContable.request.IngresoRequest;
 import com.example.gestorContable.service.IngresoService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,12 @@ public class IngresoController {
     @PostMapping
     public IngresoDTO registrarGasto(@RequestBody IngresoRequest request) {
         return ingresoService.registrarIngreso(request);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarIngreso(@PathVariable Long id) {
+        ingresoService.eliminarIngreso(id);
+        return ResponseEntity.ok("Ingreso eliminado correctamente");
     }
 
     @GetMapping
