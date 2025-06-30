@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Gasto</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <h2 class="mb-4 text-center">Editar Gasto</h2>
+
+    <div class="mb-3 row">
+        <label for="gasto-id" class="col-sm-2 col-form-label">ID del Gasto:</label>
+        <div class="col-sm-6">
+            <input type="number" class="form-control" id="gasto-id">
+        </div>
+        <div class="col-sm-4">
+            <button class="btn btn-primary" onclick="buscarGasto()">Buscar</button>
+        </div>
+    </div>
+
+    <div id="formulario" class="d-none">
+        <div class="mb-3">
+            <label for="monto" class="form-label">Monto</label>
+            <input type="number" class="form-control" id="monto">
+        </div>
+
+        <div class="mb-3">
+            <label for="categoria" class="form-label">Categoría</label>
+            <select class="form-select" id="categoria">
+                <option value="NECESIDADES">Necesidades</option>
+                <option value="GUSTOS">Gustos</option>
+                <option value="FONDO_EMERGENCIA">Fondo de Emergencia</option>
+                <option value="AHORRO">Ahorro</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input type="text" class="form-control" id="descripcion">
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-success" onclick="modificarGasto()">Guardar cambios</button>
+            <button class="btn btn-danger" onclick="eliminarGasto()">Eliminar</button>
+        </div>
+    </div>
+
+    <div id="mensaje" class="mt-4 text-center"></div>
+    <div class="text-center mt-4">
+        <a href="/gastos/gastos.html" class="btn btn-info">Gastos</a>
+        <a href="/" class="btn btn-info">Inicio</a>
+    </div>
+</div>
+
+<script>
+    let gastoActualId = null;
+
+    function buscarGasto() {
+        const id = document.getElementById("gasto-id").value;
+        if (!id) return;
+
+        fetch(`/api/gastos/${id}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Gasto no encontrado");
+                return res.json();
+            })
+            .then(data => {
+                gastoActualId = id;
+                document.getElementById("monto").value = data.monto;
+                document.getElementById("categoria").value = data.categoria;
+                document.getElementById("descripcion").value = data.descripcion;
+                document.getElementById("formulario").classList.remove("d-none");
+                document.getElementById("mensaje").innerHTML = "";
+            })
+            .catch(err => {
+                gastoActualId = null;
+                document.getElementById("formulario").classList.add("d-none");
+                document.getElementById("mensaje").innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+            });
+    }
+
+    function modificarGasto() {
+        const monto = parseFloat(document.getElementById("monto").value);
+        const categoria = document.getElementById("categoria").value;
+        const descripcion = document.getElementById("descripcion").value;
+
+        fetch(`/api/gastos/${gastoActualId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ monto, categoria, descripcion })
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Error al modificar gasto");
+            return res.json();
+        })
+        .then(() => {
+            document.getElementById("mensaje").innerHTML = `<div class="alert alert-success">Gasto actualizado.</div>`;
+        })
+        .catch(err => {
+            document.getElementById("mensaje").innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+        });
+    }
+
+    function eliminarGasto() {
+        if (!confirm("¿Seguro que deseas eliminar este gasto?")) return;
+
+        fetch(`/api/gastos/${gastoActualId}`, {
+            method: "DELETE"
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Error al eliminar gasto");
+            document.getElementById("mensaje").innerHTML = `<div class="alert alert-success">Gasto eliminado correctamente.</div>`;
+            document.getElementById("formulario").classList.add("d-none");
+        })
+        .catch(err => {
+            document.getElementById("mensaje").innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+        });
+    }
+</script>
+</body>
+</html>

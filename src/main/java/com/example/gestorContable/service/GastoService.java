@@ -78,7 +78,7 @@ public class GastoService {
     }
 
     private List<GastoDTO> crearGastoDTO(List<Gasto> gastos) {
-        return gastos.stream().map( g -> new GastoDTO(
+        return gastos.stream().map(g -> new GastoDTO(
                 g.getId(),
                 g.getMonto(),
                 g.getCategoria(),
@@ -86,5 +86,20 @@ public class GastoService {
                 g.getFecha())).collect(Collectors.toList());
     }
 
+    public Gasto obtenerGastoPorId(Long id) {
+        return gastoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Gasto no encontrado con ID: " + id));
+    }
+
+    public Gasto actualizarGasto(Long id, GastoRequest request) {
+        Gasto gasto = gastoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Gasto no encontrado con ID: " + id));
+
+        gasto.setMonto(request.getMonto());
+        //gasto.setCategoria(Categoria.valueOf(request.getCategoria()));
+        gasto.setDescripcion(request.getDescripcion());
+
+        return gastoRepository.save(gasto);
+    }
 }
 

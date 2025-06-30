@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Gastos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-white">
+<div class="container py-5">
+    <h2 class="mb-4 text-center">Historial de Gastos</h2>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover bg-white text-dark">
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Monto</th>
+                <th>Fecha</th>
+                <th>Categoría</th>
+                <th>Descripción</th>
+            </tr>
+            </thead>
+            <tbody id="tabla-gastos">
+            <tr><td colspan="5" class="text-center">Cargando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/gastos/gastos.html" class="btn btn-info">Gastos</a>
+        <a href="/" class="btn btn-info">Inicio</a>
+    </div>
+</div>
+
+<script>
+    fetch("/api/gastos")
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById("tabla-gastos");
+            tbody.innerHTML = "";
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center">No hay gastos registrados.</td></tr>`;
+                return;
+            }
+
+            data.forEach(gasto => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${gasto.id}</td>
+                    <td>$${gasto.monto}</td>
+                    <td>${gasto.fecha}</td>
+                    <td>${gasto.categoria}</td>
+                    <td>${gasto.descripcion || "-"}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        })
+        .catch(err => {
+            document.getElementById("tabla-gastos").innerHTML =
+                `<tr><td colspan="5" class="text-danger text-center">Error al cargar gastos</td></tr>`;
+            console.error(err);
+        });
+</script>
+</body>
+</html>
