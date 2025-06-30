@@ -1,5 +1,4 @@
 package com.example.gestorContable.request;
-
 import java.math.BigDecimal;
 
 public class GastoRequest {

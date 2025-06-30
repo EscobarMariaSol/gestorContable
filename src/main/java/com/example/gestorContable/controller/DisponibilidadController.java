@@ -5,7 +5,7 @@ import com.example.gestorContable.service.DisponibilidadService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/disponibilidad")
+@RequestMapping("/api/disponibilidad")
 public class DisponibilidadController {
 
     private final DisponibilidadService service;

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/ingresos")
+@RequestMapping("/api/ingresos")
 public class IngresoController {
 
     private final IngresoService ingresoService;
@@ -37,6 +37,20 @@ public class IngresoController {
                 .stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<IngresoDTO> obtenerIngresoPorId(@PathVariable Long id) {
+        Ingreso ingreso = ingresoService.obtenerIngresoPorId(id);
+        IngresoDTO dto = convertirADTO(ingreso);
+        return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<IngresoDTO> modificarIngreso(@PathVariable Long id, @RequestBody IngresoRequest request) {
+        Ingreso ingresoActualizado = ingresoService.modificarIngreso(id, request);
+        IngresoDTO dto = convertirADTO(ingresoActualizado);
+        return ResponseEntity.ok(dto);
     }
 
     private IngresoDTO convertirADTO(Ingreso ingreso) {

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/ingresos_extras")
+@RequestMapping("/api/ingresos_extras")
 public class IngresoExtraController {
 
     private final IngresoExtraService ingresoExtraService;

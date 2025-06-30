@@ -81,4 +81,13 @@ public class IngresoService {
         }
         ingresoRepository.deleteById(id);
     }
+
+    public Ingreso modificarIngreso(Long id, IngresoRequest request) {
+        Ingreso ingreso = ingresoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingreso no encontrado"));
+
+        ingreso.setMonto(request.getMonto());
+
+        return ingresoRepository.save(ingreso);
+    }
 }
