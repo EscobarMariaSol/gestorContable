@@ -15,7 +15,9 @@ public class Gasto {
     private String descripcion;
     private BigDecimal monto;
     private LocalDate fecha;
-    private String categoria;
+
+    @Enumerated(EnumType.STRING)
+    private Categoria categoria;
 
 
     // Constructor vacío
@@ -52,10 +54,10 @@ public class Gasto {
     }
 
     public String getCategoria() {
-        return categoria;
+        return categoria.toString();
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
 

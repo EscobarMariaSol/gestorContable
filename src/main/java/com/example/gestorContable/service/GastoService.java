@@ -1,6 +1,7 @@
 package com.example.gestorContable.service;
 
 import com.example.gestorContable.dto.GastoDTO;
+import com.example.gestorContable.model.Categoria;
 import com.example.gestorContable.request.GastoRequest;
 import com.example.gestorContable.model.Gasto;
 import com.example.gestorContable.repository.GastoRepository;
@@ -34,7 +35,7 @@ public class GastoService {
 
         Gasto gasto = new Gasto();
         gasto.setMonto(request.getMonto());
-        gasto.setCategoria(request.getCategoria().toUpperCase());
+        gasto.setCategoria(Categoria.valueOf(request.getCategoria().toUpperCase()));
         gasto.setDescripcion(request.getDescripcion().toUpperCase());
         gasto.setFecha(LocalDate.now());
 
@@ -96,7 +97,7 @@ public class GastoService {
                 .orElseThrow(() -> new RuntimeException("Gasto no encontrado con ID: " + id));
 
         gasto.setMonto(request.getMonto());
-        //gasto.setCategoria(Categoria.valueOf(request.getCategoria()));
+        gasto.setCategoria(Categoria.valueOf(request.getCategoria().toUpperCase()));
         gasto.setDescripcion(request.getDescripcion());
 
         return gastoRepository.save(gasto);
