@@ -49,10 +49,6 @@ public class GastoController {
         return gastoService.listarPorMes(mes);
     }
 
-    @GetMapping("/anio")
-    public List<GastoDTO> listarPorAnio(@RequestParam int anio) {
-        return gastoService.listarPorAnio(anio);
-    }
 
     @GetMapping("/categoria")
     public List<GastoDTO> listarPorAnio(@RequestParam String categoria) {

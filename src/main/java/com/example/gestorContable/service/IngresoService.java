@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class IngresoService {
@@ -90,4 +93,22 @@ public class IngresoService {
 
         return ingresoRepository.save(ingreso);
     }
+
+    public List<IngresoDTO> obtenerIngresosDelAnioActual() {
+        int anioActual = LocalDate.now().getYear();
+
+        return ingresoRepository.findAll().stream()
+                .filter(ingreso -> ingreso.getFecha().getYear() == anioActual)
+                .map(ingreso -> new IngresoDTO(
+                        ingreso.getId(),
+                        ingreso.getMonto(),
+                        ingreso.getFecha(),
+                        ingreso.getAhorro().getMonto(),
+                        ingreso.getGustos().getMonto(),
+                        ingreso.getNecesidades().getMonto(),
+                        ingreso.getFondoEmergencia().getMonto()
+                ))
+                .toList();
+    }
+
 }

@@ -57,13 +57,15 @@ public class GastoService {
     }
 
     public List<GastoDTO> listarPorMes(int mes) {
-        List<Gasto> gastos = gastoRepository.findByMes(mes);
-        return crearGastoDTO(gastos);
-    }
-
-    public List<GastoDTO> listarPorAnio(int anio) {
-        List<Gasto> gastos = gastoRepository.findByAnio(anio);
-        return crearGastoDTO(gastos);
+        return gastoRepository.findAll().stream()
+                .filter(g -> g.getFecha().getMonthValue() == mes)
+                .map(g -> new GastoDTO(
+                        g.getId(),
+                        g.getMonto(),
+                        g.getCategoria(),
+                        g.getDescripcion(),
+                        g.getFecha()))
+                .collect(Collectors.toList());
     }
 
     public List<GastoDTO> listarPorCategoria(String categoria) {
@@ -76,15 +78,6 @@ public class GastoService {
             throw new RuntimeException("El gasto con ID " + id + " no existe.");
         }
         gastoRepository.deleteById(id);
-    }
-
-    private List<GastoDTO> crearGastoDTO(List<Gasto> gastos) {
-        return gastos.stream().map(g -> new GastoDTO(
-                g.getId(),
-                g.getMonto(),
-                g.getCategoria(),
-                g.getDescripcion(),
-                g.getFecha())).collect(Collectors.toList());
     }
 
     public Gasto obtenerGastoPorId(Long id) {
@@ -101,6 +94,15 @@ public class GastoService {
         gasto.setDescripcion(request.getDescripcion());
 
         return gastoRepository.save(gasto);
+    }
+
+    private List<GastoDTO> crearGastoDTO(List<Gasto> gastos) {
+        return gastos.stream().map(g -> new GastoDTO(
+                g.getId(),
+                g.getMonto(),
+                g.getCategoria(),
+                g.getDescripcion(),
+                g.getFecha())).collect(Collectors.toList());
     }
 }
 

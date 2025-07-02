@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualizaciones</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-dark text-white">
+<div class="container py-5">
+    <h2 class="text-center mb-4">Resumen Financiero</h2>
+
+    <!-- DISPONIBILIDAD -->
+    <div class="mb-5">
+        <div class="card text-dark">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Disponibilidad Acumulada</h5>
+            </div>
+            <ul class="list-group list-group-flush" id="resumen-disponibilidad">
+                <li class="list-group-item">Cargando...</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- GASTOS DEL MES ACTUAL -->
+    <div class="mb-5">
+        <h4>Gastos del Mes Actual</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover bg-white text-dark">
+                <thead class="table-light">
+                <tr>
+                    <th>Monto</th>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                </tr>
+                </thead>
+                <tbody id="tabla-gastos">
+                <tr><td colspan="4" class="text-center">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- INGRESOS DEL AÑO ACTUAL -->
+    <div class="mb-4">
+        <h4>Ingresos del Año Actual</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover bg-white text-dark">
+                <thead class="table-light">
+                <tr>
+                    <th>Monto</th>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Concepto</th>
+                </tr>
+                </thead>
+                <tbody id="tabla-ingresos">
+                <tr><td colspan="4" class="text-center">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a href="/ingresos/ingresos.html" class="btn btn-info">Ingresos</a>
+        <a href="/gastos/gastos.html" class="btn btn-info">Gastos</a>
+        <a href="/index.html" class="btn btn-secondary">Inicio</a>
+    </div>
+</div>
+
+<script>
+    // Obtener mes actual en número (1 = enero, 12 = diciembre)
+    const mesActual = new Date().getMonth() + 1;
+
+    // Cargar resumen de disponibilidad
+    fetch("/api/disponibilidad")
+        .then(res => res.json())
+        .then(data => {
+            const ul = document.getElementById("resumen-disponibilidad");
+            ul.innerHTML = `
+                <li class="list-group-item">Necesidades: $${data.necesidades}</li>
+                <li class="list-group-item">Gustos: $${data.gustos}</li>
+                <li class="list-group-item">Fondo de Emergencia: $${data.fondoEmergencia}</li>
+                <li class="list-group-item">Ahorro: $${data.ahorro}</li>
+                <li class="list-group-item fw-bold">💰 Total General: $${data.totalGeneral}</li>
+            `;
+        })
+        .catch(err => console.error("Error al cargar disponibilidad:", err));
+
+    // Cargar gastos del mes actual
+    fetch(`/api/gastos/mes?mes=${mesActual}`)
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById("tabla-gastos");
+            tbody.innerHTML = "";
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center">No hay gastos este mes.</td></tr>`;
+                return;
+            }
+
+            data.forEach(g => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>$${g.monto}</td>
+                    <td>${g.categoria}</td>
+                    <td>${g.descripcion || "-"}</td>
+                    <td>${g.fecha}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        })
+        .catch(err => console.error("Error al cargar gastos:", err));
+
+    // Cargar ingresos del año actual
+    fetch("/api/ingresos/anio")
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById("tabla-ingresos");
+            tbody.innerHTML = "";
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center">No hay ingresos este año.</td></tr>`;
+                return;
+            }
+
+            data.forEach(i => {
+                const tipo = i.concepto ? "EXTRA" : "SUELDO";
+                const concepto = i.concepto || "-";
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>$${i.monto}</td>
+                    <td>${i.fecha}</td>
+                    <td>${tipo}</td>
+                    <td>${concepto}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        })
+        .catch(err => console.error("Error al cargar ingresos:", err));
+</script>
+</body>
+</html>

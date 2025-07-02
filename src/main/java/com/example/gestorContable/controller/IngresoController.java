@@ -46,6 +46,11 @@ public class IngresoController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping("/anio")
+    public List<IngresoDTO> obtenerIngresosDelAnioActual() {
+        return ingresoService.obtenerIngresosDelAnioActual();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<IngresoDTO> modificarIngreso(@PathVariable Long id, @RequestBody IngresoRequest request) {
         Ingreso ingresoActualizado = ingresoService.modificarIngreso(id, request);
