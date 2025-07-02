@@ -7,3 +7,9 @@ services:
     envVars:
       - key: JAVA_HOME
         value: /opt/render/project/.jdk
+        key: DATABASE_URL
+        value: jdbc:postgresql://dpg-d1iq3j6mcj7s73em9bi0-a:5432/gestor_contable_db
+        key: DATABASE_USERNAME
+        value: gestor_contable_db_user
+      - key: DATABASE_PASSWORD
+        value: ONkIZBOOtdah44d40SGnZxO5L6Akbl0u
